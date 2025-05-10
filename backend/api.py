@@ -4,13 +4,13 @@ import sqlite3
 
 app = FastAPI()
 
-# Abilitiamo CORS per qualsiasi origine
+# Abilita CORS da qualunque origine (necessario per chiamate fetch dal frontend Surge)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],            # tutte le origini
+    allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["*"],            # tutti i metodi (GET, POST…)
-    allow_headers=["*"],            # tutte le intestazioni
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 DB_NAME = "freesolana.db"
