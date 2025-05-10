@@ -1,13 +1,15 @@
-import aiosqlite
-import asyncio
+# insert_test_user.py
 
-async def create_user():
-    async with aiosqlite.connect("database.db") as db:
-        await db.execute(
-            "INSERT OR IGNORE INTO users (user_id, balance, last_bonus, referred_by) VALUES (?, ?, ?, ?)",
-            (999999, 1.2345, 0, None)
-        )
-        await db.commit()
-        print("Utente di test inserito")
+import sqlite3
 
-asyncio.run(create_user())
+conn = sqlite3.connect("freesolana.db")
+cursor = conn.cursor()
+
+user_id = 867950891
+starting_balance = 100.0
+
+cursor.execute("INSERT OR IGNORE INTO users (user_id, balance, last_bonus_time, referral_count, referred_by) VALUES (?, ?, datetime('now'), 0, NULL)", (user_id, starting_balance))
+conn.commit()
+conn.close()
+
+print("✅ Utente inserito con successo!")
