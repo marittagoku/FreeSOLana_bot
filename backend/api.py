@@ -1,7 +1,17 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 import sqlite3
 
 app = FastAPI()
+
+# Abilitiamo CORS per qualsiasi origine
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],            # tutte le origini
+    allow_credentials=True,
+    allow_methods=["*"],            # tutti i metodi (GET, POST…)
+    allow_headers=["*"],            # tutte le intestazioni
+)
 
 DB_NAME = "freesolana.db"
 
@@ -10,18 +20,16 @@ def get_user_balance(user_id: int):
         conn = sqlite3.connect(DB_NAME)
         cursor = conn.cursor()
         cursor.execute("SELECT balance FROM users WHERE user_id = ?", (user_id,))
-        result = cursor.fetchone()
+        row = cursor.fetchone()
         conn.close()
-        if result:
-            return result[0]
-        return None
+        return row[0] if row else None
     except Exception as e:
         print(f"Errore nel recupero del bilancio: {e}")
         return None
 
 @app.get("/balance/{user_id}")
 def balance(user_id: int):
-    balance = get_user_balance(user_id)
-    if balance is None:
+    bal = get_user_balance(user_id)
+    if bal is None:
         return {"error": "Utente non trovato"}
-    return {"balance": balance}
+    return {"balance": bal}
